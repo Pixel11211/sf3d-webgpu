@@ -1,0 +1,27 @@
+{
+  "name": "sf3d-webgpu",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Stable Fast 3D (SF3D) image-to-3D in the browser via WebGPU + ONNX Runtime Web, streaming the needle-tools/SF3D-webgpu artifacts.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:watch": "node --import tsx --watch --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "onnxruntime-web": "^1.29.0",
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.2",
+    "@types/three": "^0.185.4",
+    "@webgpu/types": "^0.1.0",
+    "tsx": "^4.23.0",
+    "typescript": "^5.6.0",
+    "vite": "^8.3.0"
+  }
+}

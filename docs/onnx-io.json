@@ -1,0 +1,212 @@
+[
+  {
+    "path": "/tmp/sf3d_onnx/decoder_single.onnx",
+    "bytes": 104430,
+    "ir_version": 10,
+    "producer": "pytorch 2.10.0",
+    "opsets": [
+      {
+        "domain": "ai.onnx",
+        "version": 17
+      }
+    ],
+    "inputs": [
+      {
+        "name": "triplane",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          3,
+          40,
+          384,
+          384
+        ]
+      },
+      {
+        "name": "positions",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          "num_points",
+          3
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "density",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          "num_points",
+          1
+        ]
+      },
+      {
+        "name": "vertex_offset",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          "num_points",
+          3
+        ]
+      }
+    ],
+    "node_count": 52,
+    "initializer_count": 28,
+    "op_types": {
+      "Add": 7,
+      "Mul": 6,
+      "MatMul": 6,
+      "Transpose": 5,
+      "Concat": 5,
+      "Reshape": 5,
+      "Sigmoid": 4,
+      "GatherND": 3,
+      "Unsqueeze": 3,
+      "Shape": 2,
+      "Sub": 2,
+      "Squeeze": 1,
+      "Div": 1,
+      "GridSample": 1,
+      "Exp": 1
+    }
+  },
+  {
+    "path": "/tmp/sf3d_onnx/image_tokenizer_single.onnx",
+    "bytes": 763808910,
+    "ir_version": 10,
+    "producer": "pytorch 2.10.0",
+    "opsets": [
+      {
+        "domain": "ai.onnx",
+        "version": 18
+      }
+    ],
+    "inputs": [
+      {
+        "name": "rgb",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          512,
+          512,
+          3
+        ]
+      },
+      {
+        "name": "c2w",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          4,
+          4
+        ]
+      },
+      {
+        "name": "intrinsic_normed",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          3,
+          3
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "image_tokens",
+        "elem_type": "FLOAT",
+        "shape": [
+          "batch_size",
+          1297,
+          1024
+        ]
+      }
+    ],
+    "node_count": 1469,
+    "initializer_count": 560,
+    "op_types": {
+      "Add": 314,
+      "MatMul": 193,
+      "Mul": 193,
+      "Reshape": 153,
+      "Transpose": 126,
+      "Unsqueeze": 100,
+      "Slice": 73,
+      "Concat": 60,
+      "LayerNormalization": 49,
+      "Gemm": 48,
+      "Split": 48,
+      "Shape": 25,
+      "Div": 25,
+      "Softmax": 24,
+      "Erf": 24,
+      "Cast": 8,
+      "Gather": 1,
+      "Expand": 1,
+      "Sub": 1,
+      "Conv": 1,
+      "Sigmoid": 1,
+      "Resize": 1
+    }
+  },
+  {
+    "path": "/tmp/sf3d_onnx/backbone_fp16.onnx",
+    "bytes": 911863351,
+    "ir_version": 10,
+    "producer": "pytorch 2.10.0",
+    "opsets": [
+      {
+        "domain": "ai.onnx",
+        "version": 18
+      }
+    ],
+    "inputs": [
+      {
+        "name": "image_tokens",
+        "elem_type": "FLOAT",
+        "shape": [
+          1,
+          1297,
+          1024
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "triplane",
+        "elem_type": "FLOAT",
+        "shape": [
+          1,
+          3,
+          40,
+          384,
+          384
+        ]
+      }
+    ],
+    "node_count": 1830,
+    "initializer_count": 1207,
+    "op_types": {
+      "MatMul": 604,
+      "Softmax": 216,
+      "Slice": 204,
+      "Reshape": 197,
+      "Transpose": 163,
+      "Add": 150,
+      "Mul": 125,
+      "LayerNormalization": 54,
+      "Cast": 26,
+      "Concat": 21,
+      "Split": 20,
+      "Div": 20,
+      "Erf": 20,
+      "Conv": 4,
+      "Relu": 3,
+      "InstanceNormalization": 1,
+      "Expand": 1,
+      "DepthToSpace": 1
+    }
+  }
+]

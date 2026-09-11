@@ -1,0 +1,12 @@
+# deps / build
+node_modules/
+dist/
+dev-dist/
+*.local
+# reference implementation (upstream Stability-AI/stable-fast-3d) — vendored locally for porting only, not redistributed
+.reference/
+# misc
+.DS_Store
+*.log
+# ORT wasm copied for self-hosting (optional)
+public/ort/

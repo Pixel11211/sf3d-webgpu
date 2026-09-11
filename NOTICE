@@ -1,0 +1,25 @@
+SF3D WebGPU — NOTICE
+
+This project's SOURCE CODE is licensed under the MIT License (see LICENSE).
+
+It does NOT bundle or redistribute any model weights. At runtime it streams ONNX
+artifacts from the Hugging Face repository `needle-tools/SF3D-webgpu`, which are
+derivative works of `stabilityai/stable-fast-3d`:
+
+  Stable Fast 3D — Copyright (c) Stability AI Ltd. All Rights Reserved.
+  Licensed under the Stability AI Community License:
+    https://huggingface.co/stabilityai/stable-fast-3d
+    https://huggingface.co/needle-tools/SF3D-webgpu/blob/main/LICENSE.md
+
+  "This Stability AI Model is licensed under the Stability AI Community License,
+   Copyright (c) Stability AI Ltd. All Rights Reserved."
+
+Modifications performed by needle-tools (per their NOTICE): exported model components
+to ONNX, converted the backbone to FP16, and serialized runtime grid and color-head data
+for browser-compatible inference.
+
+The inference pipeline and post-processing in this repository were independently re-implemented
+in TypeScript from the published reference `Stability-AI/stable-fast-3d` (arXiv:2408.00653)
+and from direct inspection of the ONNX graph I/O. Review the Stability AI Community License
+before using the model artifacts. This project is not affiliated with or endorsed by
+Stability AI or needle-tools.
