@@ -46,12 +46,21 @@ ONNX I/O ground truth (auto‑extracted): **[`docs/onnx-io.json`](docs/onnx-io.j
 **Requirements:** a WebGPU‑capable browser (Chrome/Edge 113+, or recent Firefox/Safari Tech Preview),
 Node 20+, and ~1.7 GB of bandwidth on first load (the models).
 
+Run each command **by itself, with no trailing text** — on Windows `cmd` the `#` character is
+*not* a comment and will break the command:
+
 ```bash
 npm install
-npm run dev        # vite dev server → open the printed URL
-# or
-npm run build && npm run preview
+npm run dev
 ```
+
+Then open the URL printed in the terminal (usually `http://localhost:5173/`). For a production
+build instead, run `npm run build` and then `npm run preview`.
+
+> **If `npm install` crashes** (`Exit handler never called!`, `EINVALIDTAGNAME`, `ERESOLVE`):
+> run `npm cache clean --force`, then `npm install` again. The bundled `.npmrc` already sets
+> `legacy-peer-deps=true`. If it still fails, delete the `node_modules` folder and retry, or
+> update npm with `npm install -g npm@latest`.
 1. Click **Load model** (downloads + verifies + caches the artifacts; watch the progress bar).
 2. Drop an image — **ideally a cutout PNG with transparency** (SF3D expects a segmented object).
 3. Click **Generate 3D**, orbit the result, then **Download .glb**.
@@ -92,10 +101,11 @@ docs/                  model-contract.md, architecture.md, onnx-io.json
 
 ## Tests & verification
 ```bash
-npm run typecheck   # tsc --noEmit  (clean)
-npm run build       # vite build    (clean)
-npm test            # node:test — marching tets, triplane, color head
+npm run typecheck
+npm run build
+npm test
 ```
+(`typecheck` = `tsc --noEmit`; `build` = `vite build`; `test` = `node:test` for marching tets, triplane, color head.)
 **Proven in this repo (no GPU needed):** TypeScript build, and unit tests that
 (i) reconstruct an *exact* isosurface from a linear SDF (validates the marching‑tets
 interpolation + triangle tables), (ii) recover a sphere from a radial SDF, (iii) reproduce
