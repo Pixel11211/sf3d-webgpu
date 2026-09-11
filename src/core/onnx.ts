@@ -17,8 +17,10 @@ let configured = false;
 export function configureOrt(): void {
   if (configured) return;
   ort.env.wasm.wasmPaths = ORT_WASM_PATHS;
-  ort.env.wasm.numThreads = 1; // WebGPU does the heavy lifting; avoid WASM worker/proxy complexity
+  ort.env.wasm.numThreads = 1;
   ort.env.wasm.proxy = false;
+  // Prefer the discrete GPU. ORT reads this when it creates its own adapter/device.
+  try { (ort.env as unknown as { webgpu: Record<string, unknown> }).webgpu.powerPreference = "high-performance"; } catch { /* older ORT */ }
   configured = true;
 }
 
@@ -26,14 +28,22 @@ export function hasWebGPU(): boolean {
   return typeof navigator !== "undefined" && !!(navigator as unknown as { gpu?: unknown }).gpu;
 }
 
+/** graphOptimizationLevel can be overridden with ?opt=basic|extended|all|disabled (debugging). */
+function optLevel(): "all" | "extended" | "basic" | "disabled" {
+  if (typeof location !== "undefined") {
+    const v = new URLSearchParams(location.search).get("opt");
+    if (v === "basic" || v === "extended" || v === "all" || v === "disabled") return v;
+  }
+  return "all";
+}
+export const graphOptLevel = optLevel;
+
 /**
- * Create our OWN WebGPU device and hand it to ONNX Runtime BEFORE any session is created.
- *
- * Why: the SF3D backbone is FP16 and its attention/triplane tensors are large. ORT's default
- * device may (a) not enable the optional `shader-f16` feature and (b) cap
- * `maxStorageBufferBindingSize` at the 128 MB default. Either makes the FP16/large compute
- * pipelines fail with "Invalid ComputePipeline … due to a previous error", which silently
- * yields garbage and an empty mesh. Requesting `shader-f16` + the adapter's MAX limits fixes both.
+ * Diagnostics only. IMPORTANT: we must NOT create a device or set env.webgpu.adapter here.
+ * In WebGPU an adapter can create only ONE device; if we consume it, ORT fails to create its
+ * own device and silently drops the WebGPU EP (CPU fallback -> garbage). ORT 1.29 already
+ * requests `shader-f16` and the adapter's MAX buffer limits when it builds its device, so we
+ * just inspect capabilities (requestAdapter does not consume the adapter — requestDevice does).
  */
 export async function initWebGPU(): Promise<WebGPUDiagnostics> {
   const diag: WebGPUDiagnostics = { available: hasWebGPU() };
@@ -43,45 +53,25 @@ export async function initWebGPU(): Promise<WebGPUDiagnostics> {
     const gpu = (navigator as unknown as { gpu: GPU }).gpu;
     const adapter = await gpu.requestAdapter({ powerPreference: "high-performance" });
     if (!adapter) { diag.error = "requestAdapter returned null (no suitable GPU)"; return diag; }
-
     const info = (adapter as unknown as { info?: GPUAdapterInfo }).info;
     diag.adapterInfo = info
       ? [info.vendor, info.device, info.architecture, info.description].filter(Boolean).join(" ") || "unknown"
       : "unknown";
     diag.isFallbackAdapter = (adapter as unknown as { isFallbackAdapter?: boolean }).isFallbackAdapter;
-
-    const hasF16 = adapter.features.has("shader-f16" as GPUFeatureName);
-    diag.shaderF16 = hasF16;
-
+    diag.shaderF16 = adapter.features.has("shader-f16" as GPUFeatureName);
     const L = adapter.limits as unknown as Record<string, number>;
     diag.maxStorageBufferBindingSize = L.maxStorageBufferBindingSize;
     diag.maxBufferSize = L.maxBufferSize;
     diag.maxComputeWorkgroupStorageSize = L.maxComputeWorkgroupStorageSize;
-
-    const requiredFeatures: GPUFeatureName[] = hasF16 ? ["shader-f16" as GPUFeatureName] : [];
-    const requiredLimits: Record<string, number> = {
-      maxStorageBufferBindingSize: L.maxStorageBufferBindingSize,
-      maxBufferSize: L.maxBufferSize,
-      maxComputeWorkgroupStorageSize: L.maxComputeWorkgroupStorageSize,
-    };
-
-    const device = await adapter.requestDevice({ requiredFeatures, requiredLimits } as GPUDeviceDescriptor);
-    // Hand our device+adapter to ORT (must be before the first WebGPU session is created).
-    (ort.env as unknown as { webgpu: Record<string, unknown> }).webgpu.adapter = adapter;
-    (ort.env as unknown as { webgpu: Record<string, unknown> }).webgpu.device = device;
-    diag.deviceProvided = true;
-
-    device.lost.then((e) => console.warn("[sf3d] WebGPU device lost:", e.reason, e.message));
-    device.addEventListener?.("uncapturederror", (ev) => {
-      console.warn("[sf3d] WebGPU uncaptured error:", (ev as GPUUncapturedErrorEvent).error?.message);
-    });
+    diag.deviceProvided = false; // ORT creates its own device (with shader-f16 + max limits)
+    // do NOT keep a reference / do NOT requestDevice — leave the adapter unconsumed for ORT
   } catch (e) {
     diag.error = `${(e as Error).name}: ${(e as Error).message}`;
   }
   return diag;
 }
 
-/** Push/pop a WebGPU validation error scope to surface the ROOT pipeline error. */
+/** Push/pop WebGPU error scopes around a run to surface the ROOT pipeline/OOM error. */
 export async function withWebGPUErrorScope<T>(fn: () => Promise<T>, label: string): Promise<T> {
   const device = (ort.env as unknown as { webgpu?: { device?: GPUDevice } }).webgpu?.device;
   if (!device?.pushErrorScope) return fn();
@@ -104,7 +94,7 @@ export async function createSession(model: ArrayBuffer | Uint8Array, preferWebGP
     preferWebGPU && hasWebGPU() ? ["webgpu", "wasm"] : ["wasm"];
   return ort.InferenceSession.create(bytes, {
     executionProviders: executionProviders as never,
-    graphOptimizationLevel: "all",
+    graphOptimizationLevel: optLevel(),
     logSeverityLevel: 2,
   });
 }
