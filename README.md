@@ -1,5 +1,9 @@
 # SF3D · WebGPU
 
+> **Powered by Stability AI.** This app runs the Stable Fast 3D model, licensed under the
+> Stability AI Community License. The model is **streamed from Hugging Face at runtime and not
+> redistributed here**. See “License & attribution” below and [`NOTICE`](NOTICE).
+
 **Stable Fast 3D (SF3D) image‑to‑3D, running entirely in your browser** via WebGPU +
 ONNX Runtime Web. Drop in a picture of an object, get a textured 3D mesh you can orbit
 and export as `.glb` — no server, no Python, no GPU install.
@@ -127,10 +131,27 @@ non‑blocking UI. Vertex colours replace the reference CUDA UV texture baker (n
 the browser) — geometry and albedo are faithful, UV atlas baking is out of scope.
 
 ## License & attribution
-- **This source code**: MIT — see [`LICENSE`](LICENSE).
+**Powered by Stability AI.**
+
+- **This source code**: MIT — see [`LICENSE`](LICENSE). It is an original, independent
+  re‑implementation (not a fork of any Stability AI / needle‑tools repo) and contains **no model
+  weights**.
 - **Model weights / ONNX artifacts**: **Stability AI Community License**, © Stability AI Ltd.
-  They are *streamed from Hugging Face at runtime and not redistributed here*. Review the license
-  before use. Derivative artifacts by `needle-tools`. See [`NOTICE`](NOTICE).
+  They are *streamed from Hugging Face at runtime and not redistributed here*. A full verbatim copy
+  of that license is bundled at [`LICENSE.stability-ai-community.md`](LICENSE.stability-ai-community.md).
+  Derivative ONNX artifacts by `needle-tools`. See [`NOTICE`](NOTICE).
+
+Because this app “uses a portion of” the Stability AI Materials, **§IV(a)** of that license applies
+to distribution, and this repo satisfies it by (i) bundling the license copy, (ii) retaining the
+required attribution notice in `NOTICE`, and (iii) displaying “Powered by Stability AI” here and in
+the app UI. **If you fork/reuse this project, keep those three in place.**
+
+Also note (binds anyone using/redistributing the model via this app):
+- Commercial use with **> US$1,000,000 annual revenue** requires registering with / licensing from
+  Stability AI (§III).
+- Use must comply with Stability AI's [Acceptable Use Policy](https://stability.ai/use-policy) (§IV(b)).
+- You may not use the model or its outputs to build a competing foundational generative AI model (§IV(b)).
 
 ## Disclaimer
-Not affiliated with Stability AI or needle-tools. Provided as‑is for research/education.
+Not affiliated with or endorsed by Stability AI or needle-tools. Provided as‑is for research/education.
+I am not a lawyer and this is not legal advice — read the bundled license before redistributing.

@@ -25,3 +25,5 @@ button:disabled { opacity:.45; cursor:not-allowed; }
 .stats { font-size:12px; color:var(--mut); }
 a.dl { display:inline-block; }
 .hint { color:var(--mut); font-size:12px; }
+.foot { padding:8px 16px; border-top:1px solid var(--line); color:var(--mut); font-size:11px; text-align:center; }
+.foot strong { color:var(--fg); }

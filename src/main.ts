@@ -36,7 +36,11 @@ app.innerHTML = `
       <div class="hint">Runs entirely client-side. First load downloads &amp; sha256-verifies the ONNX artifacts, then caches them.</div>
     </section>
     <section class="stage"><canvas id="view"></canvas></section>
-  </main>`;
+  </main>
+  <footer class="foot">
+    <strong>Powered by Stability AI</strong> · Stable Fast 3D model © Stability AI Ltd. (Stability AI
+    Community License) · ONNX artifacts by needle-tools · this app's code is MIT
+  </footer>`;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const dropEl = $("drop"); const fileEl = $<HTMLInputElement>("file"); const thumb = $<HTMLImageElement>("thumb");

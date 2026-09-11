@@ -1,25 +1,54 @@
 SF3D WebGPU — NOTICE
 
-This project's SOURCE CODE is licensed under the MIT License (see LICENSE).
+Powered by Stability AI.
 
-It does NOT bundle or redistribute any model weights. At runtime it streams ONNX
-artifacts from the Hugging Face repository `needle-tools/SF3D-webgpu`, which are
-derivative works of `stabilityai/stable-fast-3d`:
+--------------------------------------------------------------------------------
+1) SOURCE CODE of this repository
+--------------------------------------------------------------------------------
+The TypeScript/JavaScript source code in this repository is an ORIGINAL,
+independent re-implementation and is licensed under the MIT License (see LICENSE).
+It is NOT a fork of, and does not copy the source code of, any Stability AI or
+needle-tools repository. It contains no model weights.
 
-  Stable Fast 3D — Copyright (c) Stability AI Ltd. All Rights Reserved.
-  Licensed under the Stability AI Community License:
-    https://huggingface.co/stabilityai/stable-fast-3d
-    https://huggingface.co/needle-tools/SF3D-webgpu/blob/main/LICENSE.md
+--------------------------------------------------------------------------------
+2) MODEL ARTIFACTS (not distributed here — streamed at runtime)
+--------------------------------------------------------------------------------
+This project does NOT bundle or redistribute any model weights. At runtime it
+STREAMS the ONNX artifacts from the public Hugging Face repository
+`needle-tools/SF3D-webgpu`, which are Derivative Works of `stabilityai/stable-fast-3d`
+(Stable Fast 3D, arXiv:2408.00653). Those artifacts are licensed under the
+STABILITY AI COMMUNITY LICENSE. A full verbatim copy of that license is included
+in this repository at: LICENSE.stability-ai-community.md
 
-  "This Stability AI Model is licensed under the Stability AI Community License,
-   Copyright (c) Stability AI Ltd. All Rights Reserved."
+Required attribution notice (Stability AI Community License, Section IV(a)(ii)):
 
-Modifications performed by needle-tools (per their NOTICE): exported model components
-to ONNX, converted the backbone to FP16, and serialized runtime grid and color-head data
-for browser-compatible inference.
+    "This Stability AI Model is licensed under the Stability AI Community License,
+     Copyright © Stability AI Ltd. All Rights Reserved."
 
-The inference pipeline and post-processing in this repository were independently re-implemented
-in TypeScript from the published reference `Stability-AI/stable-fast-3d` (arXiv:2408.00653)
-and from direct inspection of the ONNX graph I/O. Review the Stability AI Community License
-before using the model artifacts. This project is not affiliated with or endorsed by
-Stability AI or needle-tools.
+Modifications performed by needle-tools (per their NOTICE): exported model
+components to ONNX, converted the backbone to FP16, and serialized the runtime
+grid and color-head data for browser-compatible inference.
+
+--------------------------------------------------------------------------------
+3) Compliance notes for redistributors / users of this app
+--------------------------------------------------------------------------------
+Because this app is "a product or service that uses any portion of" the Stability
+AI Materials, Section IV(a) of the Stability AI Community License applies to its
+distribution. This repository satisfies it by: (i) bundling a copy of the license
+(LICENSE.stability-ai-community.md), (ii) retaining the attribution notice above,
+and (iii) prominently displaying "Powered by Stability AI" in the README and in the
+application user interface.
+
+Additional obligations that bind anyone who uses or redistributes the model via
+this app (see LICENSE.stability-ai-community.md):
+  - Commercial use with > USD $1,000,000 annual revenue requires registration /
+    an enterprise license from Stability AI (Section III).
+  - Use must comply with Stability AI's Acceptable Use Policy
+    (https://stability.ai/use-policy) and applicable law (Section IV(b)).
+  - You may not use the model or its outputs to create/improve a competing
+    foundational generative AI model (Section IV(b)).
+
+The inference pipeline and post-processing here were independently re-implemented
+in TypeScript from the published reference `Stability-AI/stable-fast-3d` and from
+direct inspection of the ONNX graph I/O (see docs/model-contract.md). This project
+is not affiliated with or endorsed by Stability AI or needle-tools.
