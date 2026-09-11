@@ -84,6 +84,8 @@ loadBtn.addEventListener("click", async () => {
   try {
     log("loading model artifacts…");
     await pipeline.load(progress);
+    const g = pipeline.gpuDiagnostics;
+    if (g) log(`GPU: ${g.adapterInfo || "?"}${g.isFallbackAdapter ? " (FALLBACK)" : ""} | shader-f16: ${g.shaderF16 ? "yes" : "NO"} | maxStorageBuf: ${((g.maxStorageBufferBindingSize || 0) / 1e6).toFixed(0)}MB | device: ${g.deviceProvided ? "custom" : "ort-default"}${g.error ? " | err: " + g.error : ""}`);
     log("model ready.");
     progress("ready", 1, "model loaded");
     genBtn.disabled = !picked;
